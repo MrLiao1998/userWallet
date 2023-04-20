@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xin.userwallet.dao.UserWalletDao">
+    <update id="costMoney" parameterType="hashmap">
+        update user_wallet set wallet_money = wallet_money - #{money},
+                               update_time = sysdate()
+                           where wallet_id = #{walletId}
+    </update>
+
+    <update id="rollBackMoney" parameterType="hashmap">
+        update user_wallet set wallet_money = wallet_money + #{money},
+                               update_time = sysdate()
+        where wallet_id = #{walletId}
+    </update>
+
+    <insert id="moneyDetail_cost" parameterType="hashmap">
+        insert into wallet_detail (wallet_id,operate_money,create_time)
+        values(#{walletId},-#{money},sysdate())
+    </insert>
+
+    <insert id="moneyDetail_add" parameterType="hashmap">
+        insert into wallet_detail (wallet_id,operate_money,create_time)
+        values(#{walletId},#{money},sysdate())
+    </insert>
+
+    <select id="getDetail" parameterType="hashmap" resultType="com.xin.userwallet.pojo.WalletDetail">
+        select lsh,wallet_id walletId,operate_money operateMoney,create_time createTime from wallet_detail
+        where wallet_id = #{walletId}
+    </select>
+
+</mapper>
